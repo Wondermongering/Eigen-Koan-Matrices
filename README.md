@@ -1,7 +1,5 @@
 # Eigen-Koan-Matrices
 
-# Eigen-Koan Matrices
-
 > _A Framework for Structured Ambiguity, Affective Induction, and Constraint Resolution in Language Models_
 
 ## What Are Eigen-Koan Matrices?
