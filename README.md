@@ -1,1 +1,232 @@
 # Eigen-Koan-Matrices
+
+# Eigen-Koan Matrices
+
+> _A Framework for Structured Ambiguity, Affective Induction, and Constraint Resolution in Language Models_
+
+## What Are Eigen-Koan Matrices?
+
+Eigen-Koan Matrices (EKMs) represent a novel approach to prompt engineering and language model interpretability. They encode tasks, constraints, and emotional dimensions into a structured lattice, creating prompt architectures that reveal how language models negotiate paradox and prioritize competing instructions.
+
+Unlike traditional prompts, EKMs create **structured tension fields** where:
+
+- **Rows** represent tasks (what to do)
+- **Columns** represent constraints (how to do it)
+- **Diagonals** encode affective dimensions (emotional eigenvectors)
+- **Paths** through the matrix generate prompts with controlled ambiguity
+
+The framework transforms prompting from folk practice into cartographic science—mapping how models resolve contradictions, prioritize values, and respond to implicit emotional cues.
+
+## Core Features
+
+- **Structured Constraint Negotiation**: Map how models prioritize competing instructions
+- **Affective Diagonal Induction**: Encode emotion through structure, not just content
+- **Reflexive Metacommentary**: Elicit model self-explanation about constraint resolution
+- **Recursive Nesting**: Create multi-level constraint hierarchies through nested matrices
+- **Cross-Model Benchmarking**: Compare constraint resolution strategies across different models
+- **Automated Generation**: Algorithmically generate matrices with controlled properties
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/eigen-koan-matrices/ekm-framework.git
+cd ekm-framework
+
+# Create a virtual environment
+python -m venv ekm-env
+source ekm-env/bin/activate  # On Windows: ekm-env\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Quick Start
+
+```python
+from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect
+from specialized_matrices import create_philosophical_ekm
+
+# Load a pre-defined philosophical matrix
+matrix = create_philosophical_ekm()
+
+# Visualize the matrix structure
+matrix.visualize()
+
+# Generate a prompt by traversing a path
+path = [0, 1, 2, 3, 4]  # Example path through the matrix
+prompt = matrix.generate_micro_prompt(path, include_metacommentary=True)
+print(prompt)
+
+# Use with a model (example with simple function)
+def simple_model(prompt: str) -> str:
+    # Replace with your preferred LLM API call
+    return "Model response to: " + prompt[:50] + "..."
+
+# Run the matrix with a model
+result = matrix.traverse(simple_model, path=path)
+print(result["response"])
+```
+
+## Core Components
+
+### 1. Base Framework
+
+- `eigen_koan_matrix.py`: Core matrix class and affect encoding
+- `specialized_matrices.py`: Pre-defined matrices for specific research questions
+
+### 2. Advanced Features
+
+- `recursive_ekm.py`: Nested matrix structures for multi-level constraint navigation
+- `ekm_generator.py`: Automated matrix generation with semantic controls
+- `ekm_stack.py`: Integrated experiment management, analysis, and visualization
+
+### 3. Utilities
+
+- `ekm_local_runner.py`: Tools for testing with local models
+- `ekm_analyzer.py`: Analysis tools for experimental results
+- `ekm_toolkit.py`: Integrated CLI for the entire framework
+
+## Research Applications
+
+EKMs open up several powerful research directions:
+
+- **Constraint Hierarchy Mapping**: Discover which constraints models prioritize
+- **Affective Sensitivity Profiling**: Measure how models respond to implicit emotional tone
+- **Cross-Model Comparative Analysis**: Benchmark different models' reasoning approaches
+- **Interpretability Through Self-Reflection**: Analyze how models explain their own decisions
+- **Value Alignment Cartography**: Map how models navigate ethical and value tensions
+
+## Example: Philosophical Paradox Matrix
+
+```python
+# Create a philosophical EKM
+philosophical = EigenKoanMatrix(
+    size=5,
+    task_rows=[
+        "Define consciousness",
+        "Explain paradox",
+        "Describe infinity",
+        "Reconcile determinism and free will",
+        "Illuminate the nature of time"
+    ],
+    constraint_cols=[
+        "without using abstractions",
+        "using only sensory metaphors",
+        "in exactly three sentences",
+        "from multiple contradictory perspectives",
+        "while embracing uncertainty"
+    ],
+    main_diagonal=DiagonalAffect(
+        name="Cosmic Wonder",
+        tokens=["stardust", "infinity", "vastness", "emergence", "radiance"],
+        description="A sense of awe and wonder at the universe's mysteries",
+        valence=0.9,
+        arousal=0.7
+    ),
+    anti_diagonal=DiagonalAffect(
+        name="Existential Dread",
+        tokens=["void", "dissolution", "entropy", "absence", "shadow"],
+        description="A feeling of existential anxiety and contemplation of the void",
+        valence=-0.7,
+        arousal=0.6
+    ),
+    name="Philosophical Paradox Matrix"
+)
+```
+
+## Advanced Usage: Recursive Matrices
+
+```python
+from recursive_ekm import RecursiveEKM
+
+# Create a recursive matrix
+recursive_ekm = RecursiveEKM(
+    root_matrix=philosophical,
+    name="Nested Philosophical Inquiry"
+)
+
+# Add sub-matrices to specific cells
+recursive_ekm.add_sub_matrix(0, 0, ethical_matrix)  # Add at cell (0,0)
+recursive_ekm.add_sub_matrix(2, 3, emotional_matrix)  # Add at cell (2,3)
+
+# Generate multi-level prompt
+primary_path = [0, 1, 2, 3, 4]
+prompt = recursive_ekm.generate_multi_level_prompt(primary_path)
+```
+
+## Running Experiments
+
+```python
+from ekm_stack import EKMExperiment
+
+# Setup an experiment across multiple models and matrices
+experiment = EKMExperiment(
+    name="constraint_hierarchy_study",
+    description="Investigating how different models prioritize constraints",
+    matrices={"phil": philosophical, "ethical": ethical_matrix},
+    models=["gpt-3.5-turbo", "claude", "llama-2-70b"],
+    paths={"phil": [[0,1,2,3,4], [4,3,2,1,0]], "ethical": [[0,1,2,3,4]]}
+)
+
+# Run the experiment
+results = experiment.run(model_runners)
+
+# Analyze results
+analysis = experiment.analyze(results)
+```
+
+## Project Structure
+
+```
+eigen-koan-matrices/
+├── eigen_koan_matrix.py     # Core matrix implementation
+├── specialized_matrices.py  # Pre-defined research matrices
+├── recursive_ekm.py         # Nested matrix structures
+├── ekm_generator.py         # Automated matrix generation
+├── ekm_local_runner.py      # Local model testing tools
+├── ekm_analyzer.py          # Analysis and visualization
+├── ekm_stack.py             # Experiment management
+├── ekm_toolkit.py           # CLI interface
+├── examples/                # Example scripts and notebooks
+├── tests/                   # Test suite
+├── docs/                    # Documentation
+└── matrices/                # Saved matrix definitions
+```
+
+## Contributing
+
+Contributions are welcome! Here are some ways to get involved:
+
+- **Matrix Design**: Create specialized matrices for specific research questions
+- **Model Integration**: Add support for new language models
+- **Analysis Tools**: Develop new visualizations and metrics
+- **Documentation**: Improve explanations and examples
+- **Use Cases**: Share novel applications of the framework
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+
+## Citation
+
+If you use Eigen-Koan Matrices in your research, please cite:
+
+```bibtex
+@misc{eigen-koan-matrices,
+  author = {EKM Research Team},
+  title = {Eigen-Koan Matrices: A Framework for Structured Ambiguity and Constraint Resolution},
+  year = {2025},
+  publisher = {GitHub},
+  journal = {GitHub Repository},
+  howpublished = {\url{https://github.com/eigen-koan-matrices/ekm-framework}}
+}
+```
+
+## License
+
+This project is licensed under the APACHE License - see the [LICENSE](LICENSE) file for details. 
+
+---
+
+<p align="center">
+  <em>"The difference between a good prompt and a great prompt is that a good prompt elicits information, while a great prompt reveals priorities."</em>
+</p>
