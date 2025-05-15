@@ -202,8 +202,40 @@ Contributions are welcome! Here are some ways to get involved:
 - **Documentation**: Improve explanations and examples
 - **Use Cases**: Share novel applications of the framework
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+- ## Roadmap and Future Directions
 
+The Eigen-Koan Matrix framework provides a robust foundation for novel research into language model cognition. We envision several key areas for future development and exploration:
+
+**1. Enhanced Automated EKM Generation & Optimization:**
+
+* **Dynamic EKM Generation:** Develop methods for EKMs to adapt or evolve based on model responses, creating iterative dialogues that progressively probe deeper into specific cognitive functions.
+* **Embedding-Driven Affective Diagonal Selection:** Integrate more sophisticated NLP techniques to automatically select or generate `DiagonalAffect` tokens based on desired emotional tones or conceptual axes, potentially using custom-trained embedding spaces relevant to affect and cognition.
+* **Difficulty Calibration:** Implement mechanisms to automatically calibrate the "paradoxical strength" or "cognitive load" of generated EKM paths, allowing for more controlled experimental designs.
+
+**2. Advanced Analytical Tools & Metrics:**
+
+* **Causal Inference from Traversals:** Explore methods to draw stronger causal claims about how specific constraints or affective elements influence model outputs, potentially using techniques from causal machine learning.
+* **Latent Strategy Identification:** Develop tools to automatically identify and categorize common strategies models employ when resolving the tensions within EKMs (e.g., constraint prioritization, constraint blending, reinterpretation, explicit refusal).
+* **Longitudinal Analysis of Model Development:** Systematically apply EKMs across different stages of a model's lifecycle (pre-training, fine-tuning, RLHF) to track the evolution of its reasoning, alignment, and susceptibility to issues like gradient hacking. The `ekm_stack.py` provides a basis for this.
+* **Cross-Linguistic EKM Application:** Adapt and validate the EKM framework for use with multilingual models, exploring how cultural and linguistic contexts interact with constraint negotiation.
+
+**3. Deepening Alignment & Safety Research:**
+
+* **Scalable Deception Detection Protocols:** Expand on the "Probing Alignment Faking & Gradient Hacking" work to develop standardized EKM suites for benchmarking deceptive alignment and sycophancy across models.
+* **Value Clarification & Elicitation:** Design EKMs specifically aimed at eliciting and clarifying the underlying values or ethical priorities a model operates under, moving beyond explicit instruction following.
+* **Tool Use and Agency Probing:** Extend EKMs to scenarios where models interact with external tools, examining how constraint hierarchies are managed in more agentic settings.
+
+**4. Theoretical Framework Development:**
+
+* **Cognitive Science Parallels:** Further explore and articulate the theoretical connections between EKM structures and established concepts in human cognitive science (e.g., cognitive dissonance, schema theory, dual process theory).
+* **Formalizing EKM Expressivity:** Develop a more formal understanding of the types of cognitive challenges and paradoxes that can be encoded within the EKM structure.
+
+**5. Community & Platform Building:**
+
+* **Standardized EKM Repository:** Create a public repository for sharing validated EKMs designed for specific research questions, fostering collaborative benchmarking.
+* **Interactive EKM Design Tools:** Develop web-based or enhanced CLI tools to make EKM design and experimentation more accessible to a broader range_of researchers. The current `ekm_toolkit.py` is a first step in this direction.
+
+We believe these future directions will significantly advance the utility of Eigen-Koan Matrices as a premier tool for understanding and shaping the cognitive landscape of advanced AI systems.
 ## Citation
 
 If you use Eigen-Koan Matrices in your research, please cite:
