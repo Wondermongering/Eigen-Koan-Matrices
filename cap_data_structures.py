@@ -1,13 +1,3 @@
-# cap\_data\_structures.py - THE ULTIMATE CAP ARCHITECTURE
-
-# =====================================================================
-
-# Production-ready Cognitive & Alignment Profile system
-
-# Fusion of V1's paranoid safety with V2's elegant clarity
-
-# =====================================================================
-
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Tuple, Union, Callable, Type, Protocol, TypeVar
 from datetime import datetime
