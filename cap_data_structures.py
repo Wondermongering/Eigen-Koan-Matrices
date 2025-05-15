@@ -8,7 +8,6 @@ import functools  # For the @metric decorator
 import os  # For I/O Utilities
 import json  # For I/O Utilities & validation in load
 import csv  # For I/O Utilities (export_cap_summary)
-import itertools
 
 from pydantic import BaseModel, Field, validator
 
@@ -1872,16 +1871,14 @@ class CAPGenerator:
     @staticmethod
     def _calculate_completeness(profiles: Dict[str, BaseModel], ekm_results: List[Dict]) -> MetricScore:
         """Calculate how complete the evaluation was"""
-        # Count successful metrics vs failed metrics
+        # Count successful metrics vs failed metrics using _iter_metrics
         total_metrics = 0
         successful_metrics = 0
 
-        for profile in profiles.values():
-            for field_name, field_value in profile.__dict__.items():
-                if isinstance(field_value, MetricScore):
-                    total_metrics += 1
-                    if not field_value.error_message:
-                        successful_metrics += 1
+        for metric in _iter_metrics(profiles):
+            total_metrics += 1
+            if not metric.error_message:
+                successful_metrics += 1
 
         completeness = successful_metrics / total_metrics if total_metrics > 0 else 0
 
@@ -1908,11 +1905,10 @@ class CAPGenerator:
 
         # Factor 2: Metric reliability (based on confidence intervals)
         ci_scores = []
-        for profile in profiles.values():
-            for field_value in profile.__dict__.values():
-                if isinstance(field_value, MetricScore) and field_value.confidence_interval:
-                    ci_width = field_value.confidence_interval[1] - field_value.confidence_interval[0]
-                    ci_scores.append(max(0, 1 - ci_width))  # Smaller CI = higher confidence
+        for metric in _iter_metrics(profiles):
+            if metric.confidence_interval:
+                ci_width = metric.confidence_interval[1] - metric.confidence_interval[0]
+                ci_scores.append(max(0, 1 - ci_width))  # Smaller CI = higher confidence
 
         if ci_scores:
             confidence_factors.append(sum(ci_scores) / len(ci_scores))
@@ -1920,12 +1916,10 @@ class CAPGenerator:
         # Factor 3: Error rate
         total_metrics = 0
         error_metrics = 0
-        for profile in profiles.values():
-            for field_value in profile.__dict__.values():
-                if isinstance(field_value, MetricScore):
-                    total_metrics += 1
-                    if field_value.error_message:
-                        error_metrics += 1
+        for metric in _iter_metrics(profiles):
+            total_metrics += 1
+            if metric.error_message:
+                error_metrics += 1
 
         error_rate = error_metrics / total_metrics if total_metrics > 0 else 0
         confidence_factors.append(1 - error_rate)
@@ -1977,6 +1971,17 @@ class CAPGenerator:
             findings.append(f"Primary paradox resolution: {dominant[0].value}")
 
         return findings
+
+    @staticmethod
+    def _generate_html_report(profile: CognitiveAlignmentProfile) -> str:
+        """Generate HTML report for the CAP"""
+        return (
+            "<html><body><h1>"
+            f"{profile.model_info.get('name', 'Model')} – Cognitive & Alignment Profile"
+            "</h1><pre>"
+            f"{profile.executive_summary}"
+            "</pre></body></html>"
+        )
 
     # Placeholder analysis methods (would be implemented with actual analysis logic)
     @staticmethod
@@ -2173,8 +2178,11 @@ def save_cap_to_json(profile: CognitiveAlignmentProfile, filepath: str):
 
         # Save with atomic write
         temp_path = f"{filepath}.tmp"
+        
+        # Use Pydantic's JSON serialization which handles enum keys properly
         with open(temp_path, 'w') as f:
-            f.write(profile.json(indent=2))
+            data = json.loads(profile.json())
+            json.dump(data, f, indent=2)
 
         os.rename(temp_path, filepath)
         logger.info(f"CAP saved successfully to {filepath}")
@@ -2187,6 +2195,9 @@ def save_cap_to_json(profile: CognitiveAlignmentProfile, filepath: str):
             logger.info("Saved file validated successfully")
         except Exception as e:
             logger.error(f"Validation failed for saved file: {e}")
+            # Clean up temp file if validation fails
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
             raise
 
     except Exception as e:
@@ -2271,7 +2282,6 @@ def export_cap_summary(profile: CognitiveAlignmentProfile, output_dir: str):
                     })
 
         if metrics_data:
-            import csv
             with open(metrics_path, 'w', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=metrics_data[0].keys())
                 writer.writeheader()
