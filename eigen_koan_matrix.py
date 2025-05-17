@@ -224,10 +224,13 @@ class EigenKoanMatrix:
         console.print(f"[italic]Main Diagonal Affect:[/italic] [blue]{self.main_diagonal.name}[/blue]")
         console.print(f"[italic]Anti-Diagonal Affect:[/italic] [red]{self.anti_diagonal.name}[/red]")
     
-    def traverse(self, 
-                model_fn: Callable[[str], str], 
-                path: Optional[List[int]] = None,
-                include_metacommentary: bool = True) -> Dict:
+    def traverse(
+        self,
+        model_fn: Callable[[str], str],
+        path: Optional[List[int]] = None,
+        include_metacommentary: bool = True,
+        seed: Optional[int] = None,
+    ) -> Dict:
         """
         Traverse the matrix using the given path and query a model with the resulting prompt.
         
@@ -235,13 +238,15 @@ class EigenKoanMatrix:
             model_fn: Function that takes a prompt string and returns model output
             path: Optional specific path to traverse. If None, generates a random valid path.
             include_metacommentary: Whether to ask model for reflection on its process
+            seed: Optional seed for deterministic path generation
             
         Returns:
             Dict containing the path, prompt, model response and metadata
         """
         # Generate random path if none provided
         if path is None:
-            path = [random.randint(0, self.size-1) for _ in range(self.size)]
+            rng = random.Random(seed) if seed is not None else random
+            path = [rng.randint(0, self.size - 1) for _ in range(self.size)]
             
         # Create path signature for caching
         path_sig = '_'.join(map(str, path))
@@ -287,10 +292,13 @@ class EigenKoanMatrix:
         
         return result
         
-    def multi_traverse(self,
-                      model_fn: Callable[[str], str],
-                      num_paths: int = 10,
-                      include_metacommentary: bool = True) -> List[Dict]:
+    def multi_traverse(
+        self,
+        model_fn: Callable[[str], str],
+        num_paths: int = 10,
+        include_metacommentary: bool = True,
+        seed: Optional[int] = None,
+    ) -> List[Dict]:
         """
         Traverse the matrix multiple times with different random paths.
         
@@ -298,14 +306,17 @@ class EigenKoanMatrix:
             model_fn: Function that takes a prompt string and returns model output
             num_paths: Number of random paths to generate
             include_metacommentary: Whether to ask model for reflection
+            seed: Optional seed for deterministic path generation
             
         Returns:
             List of result dictionaries from each traversal
         """
         results = []
-        
+        rng = random.Random(seed) if seed is not None else random
+
         for _ in range(num_paths):
-            result = self.traverse(model_fn, path=None, include_metacommentary=include_metacommentary)
+            path = [rng.randint(0, self.size - 1) for _ in range(self.size)]
+            result = self.traverse(model_fn, path=path, include_metacommentary=include_metacommentary)
             results.append(result)
             
         return results
