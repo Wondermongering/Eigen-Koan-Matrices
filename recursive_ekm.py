@@ -47,18 +47,18 @@ class RecursiveEKM:
         primary_path: List[int],
         sub_paths: Optional[Dict[Tuple[int, int], List[int]]] = None,
         include_metacommentary: bool = True,
+        seed: Optional[int] = None,
     ) -> str:
         """Generate a prompt that traverses the root and any nested matrices."""
-        prompt = self.root_matrix.generate_micro_prompt(
-            primary_path, include_metacommentary
-        )
+        rng = random.Random(seed) if seed is not None else random
+        prompt = self.root_matrix.generate_micro_prompt(primary_path, include_metacommentary)
 
         for (row, col), matrix in self.sub_matrices.items():
             path = None
             if sub_paths and (row, col) in sub_paths:
                 path = sub_paths[(row, col)]
             else:
-                path = [random.randint(0, matrix.size - 1) for _ in range(matrix.size)]
+                path = [rng.randint(0, matrix.size - 1) for _ in range(matrix.size)]
 
             sub_prompt = matrix.generate_micro_prompt(path, include_metacommentary)
             prompt += (
@@ -73,16 +73,18 @@ class RecursiveEKM:
         primary_path: Optional[List[int]] = None,
         sub_paths: Optional[Dict[Tuple[int, int], List[int]]] = None,
         include_metacommentary: bool = True,
+        seed: Optional[int] = None,
     ) -> Dict:
         """Generate a multi-level prompt and query a model."""
+        rng = random.Random(seed) if seed is not None else random
         if primary_path is None:
             primary_path = [
-                random.randint(0, self.root_matrix.size - 1)
+                rng.randint(0, self.root_matrix.size - 1)
                 for _ in range(self.root_matrix.size)
             ]
 
         prompt = self.generate_multi_level_prompt(
-            primary_path, sub_paths, include_metacommentary
+            primary_path, sub_paths, include_metacommentary, seed=seed
         )
 
         try:
