@@ -91,7 +91,7 @@ class RecursiveEKM:
             response = f"Error querying model: {e}"
 
         return {
-            "recursive_matrix_name": self.name,
+            "matrix_name": self.name,
             "primary_path": primary_path,
             "prompt": prompt,
             "response": response,
@@ -567,123 +567,6 @@ class EKMGenerator:
         return matrices
 
 
-class RecursiveEKM:
-    """A recursive structure of nested Eigen-Koan Matrices."""
-
-    def __init__(self, root_matrix: EigenKoanMatrix, name: str = "Unnamed Recursive EKM"):
-        self.root_matrix = root_matrix
-        self.sub_matrices: Dict[Tuple[int, int], Union['RecursiveEKM', EigenKoanMatrix]] = {}
-        self.name = name
-
-    def add_sub_matrix(self, row: int, col: int, matrix: Union['RecursiveEKM', EigenKoanMatrix]):
-        """Attach a sub-matrix to a specific cell."""
-        self.sub_matrices[(row, col)] = matrix
-
-    def generate_multi_level_prompt(
-        self,
-        primary_path: List[int],
-        sub_paths: Optional[Dict[Tuple[int, int], List[int]]] = None,
-        include_metacommentary: bool = True,
-    ) -> str:
-        """Generate a prompt that traverses all nested matrices."""
-        prompt_parts = [
-            f"[Root Matrix - {self.root_matrix.name}]",
-            self.root_matrix.generate_micro_prompt(primary_path, include_metacommentary=include_metacommentary),
-        ]
-
-        for (row, col), matrix in self.sub_matrices.items():
-            if sub_paths and (row, col) in sub_paths:
-                path = sub_paths[(row, col)]
-            else:
-                size = matrix.root_matrix.size if isinstance(matrix, RecursiveEKM) else matrix.size
-                path = list(range(size))
-
-            if isinstance(matrix, RecursiveEKM):
-                sub_prompt = matrix.generate_multi_level_prompt(
-                    path,
-                    sub_paths=sub_paths,
-                    include_metacommentary=include_metacommentary,
-                )
-            else:
-                sub_prompt = matrix.generate_micro_prompt(path, include_metacommentary=include_metacommentary)
-
-            prompt_parts.append(
-                f"\n[Sub-matrix at ({row}, {col}) - {matrix.name}]\n{sub_prompt}"
-            )
-
-        return "\n".join(prompt_parts)
-
-    def traverse(
-        self,
-        model_fn: callable,
-        primary_path: List[int],
-        sub_paths: Optional[Dict[Tuple[int, int], List[int]]] = None,
-        include_metacommentary: bool = True,
-    ) -> Dict:
-        """Query a model with a multi-level prompt."""
-        prompt = self.generate_multi_level_prompt(
-            primary_path, sub_paths=sub_paths, include_metacommentary=include_metacommentary
-        )
-        try:
-            response = model_fn(prompt)
-        except Exception as e:
-            response = f"Error querying model: {str(e)}"
-
-        return {
-            "matrix_name": self.name,
-            "prompt": prompt,
-            "response": response,
-            "timestamp": datetime.datetime.now().isoformat(),
-        }
-
-    def visualize(self):
-        """Display the root matrix and any nested matrices."""
-        console.print(f"[bold underline]{self.name}[/bold underline]")
-        self.root_matrix.visualize()
-
-        for (row, col), matrix in self.sub_matrices.items():
-            console.print(f"\n[bold]Sub-matrix at ({row}, {col}) - {matrix.name}[/bold]")
-            if isinstance(matrix, RecursiveEKM):
-                matrix.visualize()
-            else:
-                matrix.visualize()
-
-    def to_json(self) -> str:
-        """Serialize the recursive matrix to JSON."""
-        data = {
-            "name": self.name,
-            "root_matrix": json.loads(self.root_matrix.to_json()),
-            "sub_matrices": [],
-        }
-
-        for (row, col), matrix in self.sub_matrices.items():
-            data["sub_matrices"].append(
-                {
-                    "row": row,
-                    "col": col,
-                    "recursive": isinstance(matrix, RecursiveEKM),
-                    "matrix": json.loads(matrix.to_json()),
-                }
-            )
-
-        return json.dumps(data, indent=2)
-
-    @classmethod
-    def from_json(cls, json_str: str) -> 'RecursiveEKM':
-        """Deserialize from JSON."""
-        data = json.loads(json_str)
-        root_matrix = EigenKoanMatrix.from_json(json.dumps(data["root_matrix"]))
-        obj = cls(root_matrix=root_matrix, name=data.get("name", "Imported Recursive EKM"))
-
-        for entry in data.get("sub_matrices", []):
-            matrix_json = json.dumps(entry["matrix"])
-            if entry.get("recursive"):
-                matrix = cls.from_json(matrix_json)
-            else:
-                matrix = EigenKoanMatrix.from_json(matrix_json)
-            obj.add_sub_matrix(entry["row"], entry["col"], matrix)
-
-        return obj
 
 
 def create_example_recursive_ekm() -> RecursiveEKM:
@@ -738,17 +621,6 @@ def example_generator_usage():
     
     return ekm, themed_matrices, family
 
-
-def create_example_recursive_ekm() -> RecursiveEKM:
-    """Create a simple RecursiveEKM for demonstration."""
-    root = create_philosophical_ekm()
-    sub1 = create_creative_writing_ekm()
-    sub2 = create_scientific_explanation_ekm()
-
-    rekm = RecursiveEKM(root_matrix=root, name="Example Recursive EKM")
-    rekm.add_sub_matrix(0, 0, sub1)
-    rekm.add_sub_matrix(2, 2, sub2)
-    return rekm
 
 if __name__ == "__main__":
     example_generator_usage()
