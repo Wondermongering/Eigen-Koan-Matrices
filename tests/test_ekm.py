@@ -1,4 +1,4 @@
-import pytest
+from tests import pytest
 
 from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect, create_random_ekm
 
@@ -27,3 +27,10 @@ def test_generate_micro_prompt_invalid_column_index():
     # Column index out of bounds
     with pytest.raises(ValueError):
         ekm.generate_micro_prompt([0, 1, 3])
+
+
+def test_generate_micro_prompt_with_metacommentary():
+    ekm = create_random_ekm(2)
+    path = [0, 1]
+    prompt = ekm.generate_micro_prompt(path, include_metacommentary=True)
+    assert "After completing this task" in prompt
