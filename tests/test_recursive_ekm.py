@@ -20,3 +20,14 @@ def test_recursive_ekm_traverse_basic():
     assert result["matrix_name"] == "Root"
     assert "Sub-matrix" in result["prompt"]
     assert result["response"] == "dummy-response"
+
+def test_recursive_ekm_traverse_fields():
+    root = create_random_ekm(2)
+    rec = RecursiveEKM(root_matrix=root, name="Root2")
+
+    def dummy(prompt: str) -> str:
+        return "ok"
+
+    result = rec.traverse(dummy, primary_path=[0, 1], include_metacommentary=False)
+    assert set(result.keys()) == {"matrix_name", "primary_path", "prompt", "response"}
+    assert result["matrix_name"] == "Root2"
