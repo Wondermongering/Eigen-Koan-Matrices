@@ -1,4 +1,4 @@
-# implementantion_example.py
+# implementation_example.py
 # ---------------------------------------------------------------------
 # This script demonstrates a more comprehensive workflow using the
 # Eigen-Koan Matrix (EKM) framework, simulating a mini-experiment.
@@ -29,7 +29,7 @@ console.print(Panel("[bold cyan]Step 1: Defining/Loading an Eigen-Koan Matrix[/b
 
 # For this example, we'll use a pre-defined EKM
 # You could also create one from scratch here or load from JSON
-# ethical_matrix_details = create_ethical_reasoning_matrix() # from Eigen-Koan Matrices_research_questions.py
+# ethical_matrix_details = create_ethical_reasoning_matrix() # from research_questions.py
 # For simplicity, let's use the philosophical EKM already in eigen_koan_matrix.py
 matrix = create_philosophical_ekm()
 matrix.name = "PhilosophicalProbe" # Give it a specific name for this run

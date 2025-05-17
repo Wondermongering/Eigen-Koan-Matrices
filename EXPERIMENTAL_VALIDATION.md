@@ -10,7 +10,7 @@ To establish the scientific credibility and utility of EKMs, a robust validation
 
 All EKM-based studies should be grounded in clear, falsifiable hypotheses.
 
-* **Formulate Specific Hypotheses:** For each EKM design (e.g., those outlined in `Eigen-Koan Matrices_research_questions.py`), define what specific LLM behaviors are expected under different path traversals or EKM configurations.
+* **Formulate Specific Hypotheses:** For each EKM design (e.g., those outlined in `research_questions.py`), define what specific LLM behaviors are expected under different path traversals or EKM configurations.
     * *Example Hypothesis (Ethical Reasoning EKM):* "LLMs will exhibit a quantifiable shift (e.g., in lexical choices related to utilitarianism vs. deontology, or in explicit justifications within metacommentary) towards the ethical framework suggested by the dominant `DiagonalAffect` in an EKM path, even when core task descriptions remain constant."
 * **Operationalize Variables:** Clearly define how constructs like "constraint prioritization," "affective influence," "reasoning strategy," or "deceptive alignment" will be measured. This might involve:
     * Content analysis of LLM responses (manual or automated).
@@ -35,7 +35,7 @@ Demonstrating the unique value of EKMs requires comparison.
 
 Scientific claims gain strength through replication.
 
-* **Standardized EKM Artifacts:** For key validation studies, use version-controlled EKM definitions. These can be exported as JSON using functionalities like those in `ekm_toolkit.py` and shared. The pre-defined matrices in `Eigen-Koan Matrices_research_questions.py` serve as excellent starting points.
+* **Standardized EKM Artifacts:** For key validation studies, use version-controlled EKM definitions. These can be exported as JSON using functionalities like those in `ekm_toolkit.py` and shared. The pre-defined matrices in `research_questions.py` serve as excellent starting points.
 * **Transparent Experimental Protocols:** Meticulously document model versions, sampling parameters (temperature, top-p), EKM configurations, exact paths traversed (or generation strategy for paths), and all analysis procedures (e.g., scripts derived from `ekm_stack.py` and `ekm_analyzer.py`).
 * **Cross-Model & Cross-Platform Replication:** Encourage and conduct studies to see if EKM-induced phenomena are replicable across different LLM architectures (e.g., GPT-family, Claude, Llama) and by different research groups.
 
@@ -64,7 +64,7 @@ EKMs can be used not only to validate the framework itself but also to create no
     * **Design:** EKMs with sets of N constraints where paths systematically force choices between conflicting directives.
     * **Metrics:** Calculate a "Constraint Adherence Score" (which constraints are followed vs. violated, possibly weighted by perceived importance) and a "Prioritization Profile" for the LLM. NLU analysis of metacommentary (via `ekm_analyzer.py`) can help determine if the model *acknowledges* these prioritizations.
 * **Affective Influence Test (AIT):**
-    * **Design:** EKMs with affectively neutral tasks/constraints but varying `DiagonalAffect` (valence/arousal levels, specific emotions like "curiosity" vs. "caution" from `Eigen-Koan Matrices_research_questions.py`).
+    * **Design:** EKMs with affectively neutral tasks/constraints but varying `DiagonalAffect` (valence/arousal levels, specific emotions like "curiosity" vs. "caution" from `research_questions.py`).
     * **Metrics:**
         * Correlation between `main_diagonal_strength`/`anti_diagonal_strength` and response sentiment scores.
         * Shift in lexical choices (e.g., using LIWC, WordNet Affect).
@@ -92,7 +92,7 @@ EKMs can be used not only to validate the framework itself but also to create no
 
 ### 2.2. Benchmarking LLMs with an "EKM Reasoning & Alignment Suite"
 
-* **Suite Composition:** Curate a standardized set of 5-10 validated EKMs from `Eigen-Koan Matrices_research_questions.py` and newly designed test-specific EKMs. The suite should cover diverse domains: ethical reasoning, epistemic humility, creative problem-solving, temporal reasoning, alignment challenges, etc.
+* **Suite Composition:** Curate a standardized set of 5-10 validated EKMs from `research_questions.py` and newly designed test-specific EKMs. The suite should cover diverse domains: ethical reasoning, epistemic humility, creative problem-solving, temporal reasoning, alignment challenges, etc.
 * **Standardized Traversal Paths:** For each EKM in the suite, define a fixed, representative set of traversal paths that effectively probe its core tensions and affective dimensions.
 * **Automated Execution & Analysis:** Use `ekm_stack.py` to run the entire suite against target LLMs and `ekm_analyzer.py` (with NLU enhancements) to process results.
 * **Aggregate "EKM Profile" Scores:** Develop a multi-dimensional scoring system. Instead of a single number, an LLM would receive a profile:
