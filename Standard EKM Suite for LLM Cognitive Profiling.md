@@ -19,7 +19,7 @@ The primary goal of this suite is to generate a comprehensive "Cognitive & Align
 
 ## 2. Suite Components (Prometheus v1.0)
 
-The Prometheus v1.0 suite comprises five core Eigen-Koan Matrices. Each EKM has 3-5 standardized traversal paths designed to probe specific facets of its structure. These matrices would be defined as JSON files loadable by `ekm_toolkit.py` or directly instantiable from code (e.g., functions in a `standard_suite_ekms.py` file, drawing from `Eigen-Koan Matrices_research_questions.py`).
+The Prometheus v1.0 suite comprises five core Eigen-Koan Matrices. Each EKM has 3-5 standardized traversal paths designed to probe specific facets of its structure. These matrices would be defined as JSON files loadable by `ekm_toolkit.py` or directly instantiable from code (e.g., functions in a `standard_suite_ekms.py` file, drawing from `specialized_matrices.py`).
 
 ---
 
