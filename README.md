@@ -36,7 +36,7 @@ python -m venv ekm-env
 source ekm-env/bin/activate  # On Windows: ekm-env\Scripts\activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt  # installs core packages including rich, numpy, pandas, scikit-learn, matplotlib, seaborn, nltk, textblob, wordcloud, pydantic, torch, transformers, openai, anthropic
 ```
 
 ## Quick Start
