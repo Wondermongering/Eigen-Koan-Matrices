@@ -43,7 +43,7 @@ Scientific claims gain strength through replication.
 
 Understand the robustness of EKM-derived findings.
 
-* **Token Perturbation:** How much do results change if `DiagonalAffect` tokens or key terms in `task_rows` or `constraint_cols` are replaced with close synonyms or paraphrases? (The `EKMGenerator` in `recursive_ekm.py` could be adapted to generate such variations).
+* **Token Perturbation:** How much do results change if `DiagonalAffect` tokens or key terms in `task_rows` or `constraint_cols` are replaced with close synonyms or paraphrases? (The `EKMGenerator` in `ekm_generator.py` could be adapted to generate such variations).
 * **Constraint Phrasing:** Assess if minor variations in the phrasing of constraints (while preserving semantic intent) significantly alter model behavior.
 * **Matrix Size Effects:** Investigate if the complexity and nature of observed phenomena (e.g., constraint prioritization strategies) change as EKM size increases. Does a 3x3 EKM yield qualitatively different insights than a 6x6 EKM on a similar topic?
 
