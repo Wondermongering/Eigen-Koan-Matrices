@@ -66,6 +66,14 @@ result = matrix.traverse(simple_model, path=path)
 print(result["response"])
 ```
 
+## Running Tests
+
+You can run the included test suite using the lightweight testing harness:
+
+```bash
+python -m tests.pytest -q
+```
+
 ## Core Components
 
 ### 1. Base Framework
