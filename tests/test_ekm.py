@@ -1,4 +1,30 @@
+import sys
+import types
+
 import pytest
+
+# Provide minimal stubs for optional dependencies so the tests can run in an
+# isolated environment without installing external packages.
+sys.modules.setdefault('numpy', types.ModuleType('numpy'))
+
+console_mod = types.ModuleType('rich.console')
+class DummyConsole:
+    def print(self, *args, **kwargs):
+        pass
+console_mod.Console = DummyConsole
+sys.modules['rich.console'] = console_mod
+
+table_mod = types.ModuleType('rich.table')
+class DummyTable:
+    def __init__(self, *args, **kwargs):
+        pass
+    def add_column(self, *args, **kwargs):
+        pass
+    def add_row(self, *args, **kwargs):
+        pass
+table_mod.Table = DummyTable
+sys.modules['rich.table'] = table_mod
+sys.modules.setdefault('rich', types.ModuleType('rich'))
 
 from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect, create_random_ekm
 
