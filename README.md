@@ -151,6 +151,11 @@ recursive_ekm.add_sub_matrix(2, 3, emotional_matrix)  # Add at cell (2,3)
 # Generate multi-level prompt
 primary_path = [0, 1, 2, 3, 4]
 prompt = recursive_ekm.generate_multi_level_prompt(primary_path)
+
+# Traverse with a model and serialize
+result = recursive_ekm.traverse(simple_model, primary_path)
+json_str = recursive_ekm.to_json()
+loaded = RecursiveEKM.from_json(json_str)
 ```
 
 ## Running Experiments
