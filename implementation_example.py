@@ -1,4 +1,4 @@
-# implementantion_example.py
+# implementation_example.py
 # ---------------------------------------------------------------------
 # This script demonstrates a more comprehensive workflow using the
 # Eigen-Koan Matrix (EKM) framework, simulating a mini-experiment.
