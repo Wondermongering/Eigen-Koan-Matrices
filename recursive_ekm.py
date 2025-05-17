@@ -1,22 +1,37 @@
-recursive_ekm.py #Implementing nested Eigen-Koan Matrices
+# recursive_ekm.py - Implementing nested Eigen-Koan Matrices
 
 # ekm_generator.py - Automated Eigen-Koan Matrix generation
 # --------------------------------------------------------
 
 import json
 import random
-import numpy as np
-from typing import List, Dict, Tuple, Optional, Union, Set
+from typing import List, Dict, Tuple, Optional, Union, Set, Callable
 from dataclasses import dataclass
-from rich.console import Console
-from rich.progress import Progress
-import pandas as pd
-from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import cosine_similarity
+
+try:  # Optional heavy dependencies
+    import numpy as np
+    import pandas as pd
+    from sklearn.cluster import KMeans
+    from sklearn.metrics.pairwise import cosine_similarity
+except Exception:  # pragma: no cover - optional deps may be missing
+    from types import SimpleNamespace
+    from typing import Any
+    np = SimpleNamespace(ndarray=Any)  # type: ignore
+    pd = None  # type: ignore
+    KMeans = None  # type: ignore
+    cosine_similarity = None  # type: ignore
+
+try:
+    from rich.console import Console
+    from rich.progress import Progress
+except Exception:  # pragma: no cover - optional
+    Console = None  # type: ignore
+    class Progress:  # type: ignore
+        pass
 
 from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect
 
-console = Console()
+console = Console() if Console else None
 
 class EKMGenerator:
     """
@@ -454,6 +469,65 @@ class EKMGenerator:
             matrices[name] = matrix
         
         return matrices
+
+
+class RecursiveEKM:
+    """Simple container for a root matrix with optional nested sub-matrices."""
+
+    def __init__(self, root_matrix: EigenKoanMatrix, name: str = "Recursive EKM"):
+        self.root_matrix = root_matrix
+        self.name = name
+        self.sub_matrices: Dict[Tuple[int, int], EigenKoanMatrix] = {}
+
+    def add_sub_matrix(self, row: int, col: int, sub_matrix: EigenKoanMatrix) -> None:
+        """Attach a sub-matrix to a specific cell in the root matrix."""
+        self.sub_matrices[(row, col)] = sub_matrix
+
+    def generate_multi_level_prompt(
+        self,
+        primary_path: List[int],
+        sub_paths: Optional[Dict[Tuple[int, int], List[int]]] = None,
+        include_metacommentary: bool = False,
+    ) -> str:
+        """Generate a prompt traversing the root and any nested matrices."""
+        sub_paths = sub_paths or {}
+        parts = [self.root_matrix.generate_micro_prompt(primary_path, include_metacommentary)]
+
+        for row, col in enumerate(primary_path):
+            key = (row, col)
+            if key in self.sub_matrices:
+                sub_matrix = self.sub_matrices[key]
+                sub_path = sub_paths.get(key, [0] * sub_matrix.size)
+                parts.append(sub_matrix.generate_micro_prompt(sub_path, include_metacommentary))
+
+        return "\n".join(parts)
+
+    def traverse(
+        self,
+        model_fn: Callable[[str], str],
+        primary_path: List[int],
+        sub_paths: Optional[Dict[Tuple[int, int], List[int]]] = None,
+        include_metacommentary: bool = True,
+    ) -> Dict:
+        """Query a model using a multi-level prompt."""
+        prompt = self.generate_multi_level_prompt(primary_path, sub_paths, include_metacommentary)
+        response = model_fn(prompt)
+        return {
+            "prompt": prompt,
+            "response": response,
+            "primary_path": primary_path,
+            "sub_paths": sub_paths or {},
+        }
+
+
+def create_example_recursive_ekm() -> RecursiveEKM:
+    """Construct a small recursive matrix for demonstrations."""
+    root = create_philosophical_ekm()
+    sub = create_creative_writing_ekm()
+    rec = RecursiveEKM(root_matrix=root, name="Example Recursive EKM")
+    rec.add_sub_matrix(0, 0, sub)
+    return rec
+
 
 # Example usage
 def example_generator_usage():

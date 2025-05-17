@@ -1,17 +1,27 @@
 # eigen_koan_matrix.py - Core implementation of Eigen-Koan Matrices
 # ---------------------------------------------------------
 
-import numpy as np
+try:
+    import numpy as np
+except Exception:  # pragma: no cover - optional
+    from types import SimpleNamespace
+    from typing import Any
+    np = SimpleNamespace(ndarray=Any)  # type: ignore
 import random
 import json
 import datetime
 import uuid
 from typing import List, Dict, Tuple, Optional, Union, Callable
 from dataclasses import dataclass
-from rich.console import Console
-from rich.table import Table
+try:
+    from rich.console import Console
+    from rich.table import Table
+except Exception:  # pragma: no cover - optional
+    Console = None  # type: ignore
+    class Table:  # type: ignore
+        pass
 
-console = Console()
+console = Console() if Console else None
 
 @dataclass
 class DiagonalAffect:
