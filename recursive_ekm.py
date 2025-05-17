@@ -1,6 +1,5 @@
-recursive_ekm.py #Implementing nested Eigen-Koan Matrices
-
-# ekm_generator.py - Automated Eigen-Koan Matrix generation
+# recursive_ekm.py - Eigen-Koan Matrix generator
+# This module provides the EKMGenerator class for constructing matrices.
 # --------------------------------------------------------
 
 import json
