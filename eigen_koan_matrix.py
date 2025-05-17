@@ -1,17 +1,28 @@
 # eigen_koan_matrix.py - Core implementation of Eigen-Koan Matrices
 # ---------------------------------------------------------
 
-import numpy as np
 import random
 import json
 import datetime
 import uuid
 from typing import List, Dict, Tuple, Optional, Union, Callable
 from dataclasses import dataclass
-from rich.console import Console
-from rich.table import Table
 
-console = Console()
+try:
+    from rich.console import Console
+    from rich.table import Table
+except ImportError:  # pragma: no cover - optional dependency
+    Console = None
+    Table = None
+
+if Console is not None:
+    console = Console()
+else:
+    class _PlainConsole:
+        def print(self, *args, **kwargs):
+            print(*args)
+
+    console = _PlainConsole()
 
 @dataclass
 class DiagonalAffect:

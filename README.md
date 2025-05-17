@@ -37,6 +37,9 @@ source ekm-env/bin/activate  # On Windows: ekm-env\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+# The `requirements.txt` file lists the core packages used
+# across the project such as `numpy`, `pandas`, `rich`, and
+# `scikit-learn`.
 ```
 
 ## Quick Start

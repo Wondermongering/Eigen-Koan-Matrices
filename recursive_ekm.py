@@ -6,13 +6,28 @@
 import json
 import random
 import datetime
-import numpy as np
 from typing import List, Dict, Tuple, Optional, Union, Set
-from rich.console import Console
-from rich.progress import Progress
-import pandas as pd
-from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import cosine_similarity
+
+try:
+    from rich.console import Console
+    from rich.progress import Progress
+except ImportError:  # pragma: no cover - optional dependency
+    class Console:
+        def print(self, *args, **kwargs):
+            print(*args)
+
+    class Progress:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def track(self, iterable, *args, **kwargs):
+            return iterable
 
 from eigen_koan_matrix import (
     EigenKoanMatrix,
@@ -232,7 +247,7 @@ class EKMGenerator:
             "boredom": (-0.4, 0.1)
         }
     
-    def _get_embeddings(self, texts: List[str]) -> np.ndarray:
+    def _get_embeddings(self, texts: List[str]):
         """
         Get embeddings for a list of texts.
         
@@ -246,8 +261,9 @@ class EKMGenerator:
             # Use a simple fallback if no model is provided
             # This is just for demonstration; in practice, use a real embedding model
             console.print("[yellow]Warning: No embedding model provided. Using random embeddings.[/yellow]")
+            import numpy as np  # Local import to avoid hard dependency
             return np.random.random((len(texts), 128))
-        
+        import numpy as np  # Local import to avoid hard dependency
         return np.array([self.embedding_model(text) for text in texts])
     
     def _select_diverse_elements(self, 
@@ -270,8 +286,10 @@ class EKMGenerator:
             
         # Get embeddings
         embeddings = self._get_embeddings(elements)
-        
+
         # Use KMeans to find diverse clusters
+        from sklearn.cluster import KMeans  # Local import
+        import numpy as np  # Local import
         kmeans = KMeans(n_clusters=count, random_state=42)
         clusters = kmeans.fit_predict(embeddings)
         
@@ -311,8 +329,9 @@ class EKMGenerator:
             
         # Get embeddings
         embeddings = self._get_embeddings(elements)
-        
+
         # Calculate similarity matrix
+        from sklearn.metrics.pairwise import cosine_similarity  # Local import
         similarities = cosine_similarity(embeddings)
         
         # Find the least similar pair
@@ -362,6 +381,8 @@ class EKMGenerator:
         token_embeddings = self._get_embeddings(available_tokens)
         
         # Calculate similarity to emotion
+        from sklearn.metrics.pairwise import cosine_similarity  # Local import
+        import numpy as np  # Local import
         similarities = cosine_similarity([emotion_embedding], token_embeddings)[0]
         
         # Select the most similar tokens
