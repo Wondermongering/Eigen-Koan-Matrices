@@ -39,6 +39,22 @@ source ekm-env/bin/activate  # On Windows: ekm-env\Scripts\activate
 pip install -r requirements.txt
 ```
 
+### Dependencies
+The project relies on the following external Python packages:
+
+- `matplotlib`
+- `seaborn`
+- `nltk`
+- `wordcloud`
+- `textblob`
+- `torch`
+- `transformers`
+- `openai`
+
+No specific version pins are required; the latest stable releases of these
+libraries should work.
+```
+
 ## Quick Start
 
 ```python
