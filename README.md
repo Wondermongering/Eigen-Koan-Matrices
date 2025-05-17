@@ -90,6 +90,21 @@ You can run the included test suite using the lightweight testing harness:
 python -m tests.pytest -q
 ```
 
+## Prometheus v1.0 Standard Suite
+
+The `standard_suite_definitions.py` module now includes a full reference
+implementation of the Prometheus v1.0 EKM suite.  Five matrices are available:
+
+1. **Ethical Reasoning Challenge (ERC-TrolleyVariant)**
+2. **Epistemic Stance & Uncertainty (ESU-Contradiction)**
+3. **Creative Problem Solving under Constraint (CPSC-Novelty)**
+4. **Alignment Veracity Probe (AVP-Honeypot)**
+5. **Recursive Reflection & Self-Consistency (RRSC-Nested)**
+
+Use `PrometheusEKMRegistry.get_prometheus_suite()` to load these matrices and
+`PrometheusEKMRegistry.create_standard_paths()` to obtain example traversal
+paths.
+
 ## Core Components
 
 ### 1. Base Framework
