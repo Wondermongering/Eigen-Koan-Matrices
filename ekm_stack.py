@@ -6,13 +6,44 @@ import json
 import datetime
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+try:
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+except ImportError:  # provide minimal stubs if plotting libs are unavailable
+    class _StubPlot:
+        def __getattr__(self, name):
+            def _stub(*args, **kwargs):
+                pass
+            return _stub
+
+    plt = sns = _StubPlot()
 from typing import Dict, List, Any, Optional, Union, Tuple
 from dataclasses import dataclass
 from pathlib import Path
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
+try:
+    from rich.progress import (
+        Progress,
+        SpinnerColumn,
+        TextColumn,
+        BarColumn,
+        TimeElapsedColumn,
+    )
+except (ImportError, AttributeError):
+    from rich.progress import Progress
+
+    class SpinnerColumn:
+        pass
+
+    class TextColumn:
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class BarColumn:
+        pass
+
+    class TimeElapsedColumn:
+        pass
 
 from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect
 
