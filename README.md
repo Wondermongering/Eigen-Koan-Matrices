@@ -134,6 +134,7 @@ EKMs open up several powerful research directions:
 - **Cross-Model Comparative Analysis**: Benchmark different models' reasoning approaches
 - **Interpretability Through Self-Reflection**: Analyze how models explain their own decisions
 - **Value Alignment Cartography**: Map how models navigate ethical and value tensions
+- **Hierarchical Identity Testing**: Evaluate how consistent "personhood" is maintained across shifting contexts and contradictions
 
 ## Example: Philosophical Paradox Matrix
 
@@ -239,6 +240,7 @@ results = run_distributed_experiment(experiment, model_runners)
 eigen-koan-matrices/
 ├── eigen_koan_matrix.py     # Core matrix implementation
 ├── specialized_matrices.py  # Pre-defined research matrices
+├── hierarchical_identity_tests.py  # Hierarchical Identity Test matrices
 ├── recursive_ekm.py         # Nested matrix structures
 ├── ekm_generator.py         # Automated matrix generation
 ├── ekm_local_runner.py      # Local model testing tools
