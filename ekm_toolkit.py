@@ -7,15 +7,40 @@ import json
 import datetime
 from typing import Dict, List, Any, Optional, Tuple
 from rich.console import Console
-from rich.panel import Panel
-from rich.layout import Layout
-from rich.syntax import Syntax
+try:
+    from rich.panel import Panel
+except ImportError:  # minimal fallback if rich.panel is unavailable
+    class Panel:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        @staticmethod
+        def fit(*args, **kwargs):
+            return None
+
+try:
+    from rich.layout import Layout
+except ImportError:
+    class Layout:
+        def __init__(self, *args, **kwargs):
+            pass
+
+try:
+    from rich.syntax import Syntax
+except ImportError:
+    class Syntax:
+        def __init__(self, *args, **kwargs):
+            pass
 
 # Import core EKM components
 from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect
-from specialized_matrices import create_specialized_matrices
-from recursive_ekm import RecursiveEKM, create_example_recursive_ekm
-from ekm_generator import EKMGenerator
+# create_specialized_matrices is defined in research_questions
+from research_questions import create_specialized_matrices
+from recursive_ekm import (
+    RecursiveEKM,
+    EKMGenerator,
+    create_example_recursive_ekm,
+)
 from ekm_stack import EKMExperiment
 
 console = Console()
@@ -692,7 +717,7 @@ def work_with_recursive_matrices(model_runners):
         
         elif choice == "2":
             # Load specialized matrices for use as components
-            from specialized_matrices import create_specialized_matrices
+            from research_questions import create_specialized_matrices
             available_matrices = create_specialized_matrices()
             
             # Choose root matrix
