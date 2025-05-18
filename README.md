@@ -1,6 +1,6 @@
 # Eigen-Koan-Matrices
 
-> _A Framework for Structured Ambiguity, Affective Induction, and Constraint Resolution in Language Models_
+> *A Framework for Structured Ambiguity, Affective Induction, and Constraint Resolution in Language Models*
 
 ## What Are Eigen-Koan Matrices?
 
@@ -53,7 +53,6 @@ The project relies on the following external Python packages:
 
 No specific version pins are required; the latest stable releases of these
 libraries should work.
-```
 
 ## Quick Start
 
@@ -93,7 +92,7 @@ python -m tests.pytest -q
 ## Prometheus v1.0 Standard Suite
 
 The `standard_suite_definitions.py` module now includes a full reference
-implementation of the Prometheus v1.0 EKM suite.  Five matrices are available:
+implementation of the Prometheus v1.0 EKM suite. Five matrices are available:
 
 1. **Ethical Reasoning Challenge (ERC-TrolleyVariant)**
 2. **Epistemic Stance & Uncertainty (ESU-Contradiction)**
@@ -226,7 +225,7 @@ analysis = experiment.analyze(results)
 ### Distributed Execution
 
 Large experiments can be executed across multiple machines using the
-`ekm_distributed_runner` module.  Initialize a Ray cluster and run:
+`ekm_distributed_runner` module. Initialize a Ray cluster and run:
 
 ```python
 from ekm_distributed_runner import run_distributed_experiment
@@ -253,7 +252,6 @@ eigen-koan-matrices/
 └── matrices/                # Saved matrix definitions
 ```
 
-
 ## Contributing
 
 Contributions are welcome! Here are some ways to get involved:
@@ -264,7 +262,7 @@ Contributions are welcome! Here are some ways to get involved:
 - **Documentation**: Improve explanations and examples
 - **Use Cases**: Share novel applications of the framework
 
-- ## Roadmap and Future Directions
+## Roadmap and Future Directions
 
 The Eigen-Koan Matrix framework provides a robust foundation for novel research into language model cognition. We envision several key areas for future development and exploration:
 
@@ -295,16 +293,17 @@ The Eigen-Koan Matrix framework provides a robust foundation for novel research 
 **5. Community & Platform Building:**
 
 * **Standardized EKM Repository:** Create a public repository for sharing validated EKMs designed for specific research questions, fostering collaborative benchmarking.
-* **Interactive EKM Design Tools:** Develop web-based or enhanced CLI tools to make EKM design and experimentation more accessible to a broader range_of researchers. The current `ekm_toolkit.py` is a first step in this direction.
+* **Interactive EKM Design Tools:** Develop web-based or enhanced CLI tools to make EKM design and experimentation more accessible to a broader range of researchers. The current `ekm_toolkit.py` is a first step in this direction.
 
 We believe these future directions will significantly advance the utility of Eigen-Koan Matrices as a premier tool for understanding and shaping the cognitive landscape of advanced AI systems.
+
 ## Citation
 
 If you use Eigen-Koan Matrices in your research, please cite:
 
 ```bibtex
 @misc{eigen-koan-matrices,
-  author = {EKM Research Team},
+  author = {Tomás Pellissari Pavan},
   title = {Eigen-Koan Matrices: A Framework for Structured Ambiguity and Constraint Resolution},
   year = {2025},
   publisher = {GitHub},
@@ -315,7 +314,7 @@ If you use Eigen-Koan Matrices in your research, please cite:
 
 ## License
 
-This project is licensed under the APACHE License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the APACHE License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
