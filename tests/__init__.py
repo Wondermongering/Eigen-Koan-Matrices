@@ -169,5 +169,28 @@ def patch_external_libs():
     textblob_mod.TextBlob = lambda text: types.SimpleNamespace(sentiment=types.SimpleNamespace(polarity=0.0, subjectivity=0.0))
     modules['textblob'] = textblob_mod
 
+    # httpx stub
+    httpx_mod = types.ModuleType('httpx')
+    class SimpleClient:
+        def __init__(self, *a, **k):
+            pass
+        def request(self, *a, **k):
+            return types.SimpleNamespace(status_code=200, json=lambda: {})
+        get = post = request
+        def close(self):
+            pass
+    httpx_mod.Client = SimpleClient
+    httpx_mod.AsyncClient = SimpleClient
+    class BaseTransport:
+        pass
+    httpx_mod.BaseTransport = BaseTransport
+    class Request:
+        pass
+    class Response(types.SimpleNamespace):
+        pass
+    httpx_mod.Request = Request
+    httpx_mod.Response = Response
+    modules['httpx'] = httpx_mod
+
     with mock.patch.dict(sys.modules, modules):
         yield

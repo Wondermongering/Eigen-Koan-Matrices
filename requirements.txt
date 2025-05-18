@@ -6,4 +6,8 @@ textblob
 torch
 transformers
 openai
+fastapi
+uvicorn
+httpx
 ray
+main
