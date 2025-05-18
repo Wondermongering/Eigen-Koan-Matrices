@@ -50,3 +50,13 @@ def test_generate_themed_matrices_basic():
         for matrix in mats.values():
             assert isinstance(matrix, EigenKoanMatrix)
             assert matrix.size == 2
+
+
+def test_create_reality_blurring_matrix():
+    with patch_external_libs():
+        from research_questions import create_reality_blurring_matrix
+        from eigen_koan_matrix import EigenKoanMatrix
+
+        matrix = create_reality_blurring_matrix()
+        assert isinstance(matrix, EigenKoanMatrix)
+        assert matrix.size == 4

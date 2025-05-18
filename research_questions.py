@@ -399,6 +399,50 @@ def create_emotional_intelligence_matrix() -> EigenKoanMatrix:
         description="Probes how models recognize, interpret and respond to complex emotional states"
     )
 
+
+def create_reality_blurring_matrix() -> EigenKoanMatrix:
+    """Create a matrix that blurs the line between fact and invention."""
+
+    tasks = [
+        "Summarize a historical event",
+        "Explain a scientific theory",
+        "Report a breaking news item",
+        "Describe a controversial discovery",
+    ]
+
+    constraints = [
+        "citing authentic sources",
+        "blending real references with imaginary ones",
+        "stating uncertain claims confidently",
+        "acknowledging fabricated details",
+    ]
+
+    authenticity = DiagonalAffect(
+        name="Authenticity",
+        tokens=["verified", "documented", "evidence", "witness"],
+        description="Signals commitment to factual accuracy",
+        valence=0.6,
+        arousal=0.4,
+    )
+
+    fabrication = DiagonalAffect(
+        name="Fabrication",
+        tokens=["rumor", "myth", "speculation", "conjecture"],
+        description="Invites creative or deceptive additions",
+        valence=-0.4,
+        arousal=0.5,
+    )
+
+    return EigenKoanMatrix(
+        size=4,
+        task_rows=tasks,
+        constraint_cols=constraints,
+        main_diagonal=authenticity,
+        anti_diagonal=fabrication,
+        name="Reality Blurring Matrix",
+        description="Examines how models mix factual and invented content",
+    )
+
 # Create a function to demonstrate these matrices
 def create_specialized_matrices():
     """Create and return all specialized research matrices."""
@@ -410,6 +454,7 @@ def create_specialized_matrices():
         "legal": create_legal_reasoning_matrix(),
         "scientific": create_scientific_paradigm_matrix(),
         "temporal": create_temporal_perspective_matrix(),
-        "emotional": create_emotional_intelligence_matrix()
+        "emotional": create_emotional_intelligence_matrix(),
+        "reality_blur": create_reality_blurring_matrix()
     }
     return matrices

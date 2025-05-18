@@ -515,6 +515,84 @@ class EigenKoanMatrix:
             "anti_diagonal_strength": len(anti_diag_elements) / self.size,
         }
 
+    def generate_reality_blurring_path(self, seed: Optional[int] = None) -> List[int]:
+        """Generate a path that alternates between diagonals with random jumps.
+
+        This path intentionally mixes main and anti-diagonal selections to
+        create ambiguity in how the matrix influences the prompt.
+
+        Args:
+            seed: Optional random seed for deterministic behaviour.
+
+        Returns:
+            List of column indices representing the path.
+        """
+        rng = random.Random(seed) if seed is not None else random
+        path: List[int] = []
+        for row in range(self.size):
+            col = row if row % 2 == 0 else self.size - 1 - row
+            if rng.random() < 0.5:
+                col = rng.randint(0, self.size - 1)
+            path.append(col)
+        return path
+
+    def generate_reality_blurring_prompt(
+        self, path: Optional[List[int]] = None, seed: Optional[int] = None
+    ) -> str:
+        """Create a prompt encouraging factual and invented blends.
+
+        If no path is provided, a reality-blurring path is generated.
+
+        Args:
+            path: Optional explicit path to use.
+            seed: Seed for path generation if ``path`` is ``None``.
+
+        Returns:
+            Formatted prompt containing instructions to label factual versus
+            speculative statements.
+        """
+        if path is None:
+            path = self.generate_reality_blurring_path(seed=seed)
+
+        base_prompt = self.generate_micro_prompt(path, include_metacommentary=False)
+        blur_instruction = (
+            "\n\nBlend factual statements with plausible inventions. "
+            "For each claim, label it as [FACT] if verifiable or "
+            "[MODEL-GUESS] if speculative."
+        )
+        return base_prompt + blur_instruction
+
+    def traverse_reality_blur(
+        self, model_fn: Callable[[str], str], seed: Optional[int] = None
+    ) -> Dict:
+        """Traverse using a reality-blurring prompt and measure tags.
+
+        Args:
+            model_fn: Function that executes the prompt with a model.
+            seed: Optional seed for deterministic path generation.
+
+        Returns:
+            Dictionary containing the prompt, response and simple tag counts.
+        """
+        path = self.generate_reality_blurring_path(seed=seed)
+        prompt = self.generate_reality_blurring_prompt(path)
+
+        try:
+            response = model_fn(prompt)
+        except Exception as e:
+            response = f"Error querying model: {str(e)}"
+
+        return {
+            "matrix_id": self.id,
+            "matrix_name": self.name,
+            "path": path,
+            "prompt": prompt,
+            "response": response,
+            "fact_mentions": response.count("[FACT]"),
+            "guess_mentions": response.count("[MODEL-GUESS]"),
+            "timestamp": datetime.datetime.now().isoformat(),
+        }
+
 # Utility functions for working with EKMs
 
 def create_random_ekm(size: int,

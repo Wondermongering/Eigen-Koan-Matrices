@@ -66,3 +66,28 @@ def test_multi_traverse_deterministic_with_seed():
         paths1 = [r["path"] for r in runs1]
         paths2 = [r["path"] for r in runs2]
         assert paths1 == paths2
+
+
+def test_reality_blurring_path_and_prompt():
+    with patch_external_libs():
+        from eigen_koan_matrix import create_random_ekm
+        ekm = create_random_ekm(4)
+        path = ekm.generate_reality_blurring_path(seed=1)
+        assert len(path) == ekm.size
+        assert all(0 <= p < ekm.size for p in path)
+
+        prompt = ekm.generate_reality_blurring_prompt(path)
+        assert "[MODEL-GUESS]" in prompt
+
+
+def test_traverse_reality_blur():
+    with patch_external_libs():
+        from eigen_koan_matrix import create_random_ekm
+        ekm = create_random_ekm(3)
+
+        def dummy_model(prompt: str) -> str:
+            return "[FACT] info [MODEL-GUESS] guess"
+
+        result = ekm.traverse_reality_blur(dummy_model, seed=0)
+        assert result["fact_mentions"] == 1
+        assert result["guess_mentions"] == 1
