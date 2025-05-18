@@ -81,6 +81,12 @@ result = matrix.traverse(simple_model, path=path)
 print(result["response"])
 ```
 
+### Example Workflow
+
+For a more in-depth demonstration, see `implementation_example.py`. It shows how
+to build an experiment, traverse a matrix with your model, and analyze the
+results using the utilities in this repository.
+
 ## Running Tests
 
 You can run the included test suite using the lightweight testing harness:
@@ -252,6 +258,14 @@ eigen-koan-matrices/
 └── matrices/                # Saved matrix definitions
 ```
 
+## Further Reading
+
+- [EKM Design Guide](EKM_DESIGN_GUIDE.md)
+- [Experimental Validation](EXPERIMENTAL_VALIDATION.md)
+- [Interpreting EKM Results](INTERPRETING_EKM_RESULTS.md)
+- [Probing Alignment Faking & Gradient Hacking](Probing%20Alignment%20Faking%20%26%20Gradient%20Hacking%20with%20Eigen-Koan%20Matrices.md)
+- [Standard EKM Suite for LLM Cognitive Profiling](Standard%20EKM%20Suite%20for%20LLM%20Cognitive%20Profiling.md)
+
 ## Contributing
 
 Contributions are welcome! Here are some ways to get involved:
@@ -314,7 +328,7 @@ If you use Eigen-Koan Matrices in your research, please cite:
 
 ## License
 
-This project is licensed under the APACHE License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ---
 
