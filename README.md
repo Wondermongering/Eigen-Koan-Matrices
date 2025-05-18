@@ -117,6 +117,7 @@ paths.
 - `recursive_ekm.py`: Nested matrix structures for multi-level constraint navigation
 - `ekm_generator.py`: Automated matrix generation with semantic controls
 - `ekm_stack.py`: Integrated experiment management, analysis, and visualization
+- `ekm_distributed_runner.py`: Parallel execution of matrices across a Ray cluster
 
 ### 3. Utilities
 
@@ -216,6 +217,17 @@ results = experiment.run(model_runners)
 
 # Analyze results
 analysis = experiment.analyze(results)
+```
+
+### Distributed Execution
+
+Large experiments can be executed across multiple machines using the
+`ekm_distributed_runner` module.  Initialize a Ray cluster and run:
+
+```python
+from ekm_distributed_runner import run_distributed_experiment
+
+results = run_distributed_experiment(experiment, model_runners)
 ```
 
 ## Project Structure
