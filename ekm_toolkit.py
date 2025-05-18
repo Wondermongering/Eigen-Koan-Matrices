@@ -38,9 +38,9 @@ from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect
 from research_questions import create_specialized_matrices
 from recursive_ekm import (
     RecursiveEKM,
-    EKMGenerator,
     create_example_recursive_ekm,
 )
+from ekm_generator import EKMGenerator
 from ekm_stack import EKMExperiment
 
 console = Console()
