@@ -202,14 +202,17 @@ loaded = RecursiveEKM.from_json(json_str)
 
 ```python
 from ekm_stack import EKMExperiment
+from ekm_db import EKMDatabase
 
 # Setup an experiment across multiple models and matrices
+db = EKMDatabase("results.db")
 experiment = EKMExperiment(
     name="constraint_hierarchy_study",
     description="Investigating how different models prioritize constraints",
     matrices={"phil": philosophical, "ethical": ethical_matrix},
     models=["gpt-3.5-turbo", "claude", "llama-2-70b"],
-    paths={"phil": [[0,1,2,3,4], [4,3,2,1,0]], "ethical": [[0,1,2,3,4]]}
+    paths={"phil": [[0,1,2,3,4], [4,3,2,1,0]], "ethical": [[0,1,2,3,4]]},
+    db=db
 )
 
 # Run the experiment

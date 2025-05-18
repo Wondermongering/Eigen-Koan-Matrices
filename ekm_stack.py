@@ -21,6 +21,7 @@ from typing import Dict, List, Any, Optional, Union, Tuple
 from dataclasses import dataclass
 from pathlib import Path
 from rich.console import Console
+from ekm_db import EKMDatabase
 try:
     from rich.progress import (
         Progress,
@@ -60,6 +61,7 @@ class EKMExperiment:
     models: List[str]
     paths: Dict[str, List[List[int]]]  # Maps matrix_id to paths
     results_dir: str = "./ekm_results"
+    db: Optional[EKMDatabase] = None
     
     def __post_init__(self):
         """Setup experiment directory structure."""
@@ -146,6 +148,14 @@ class EKMExperiment:
                         # Generate prompt and get response
                         result = matrix.traverse(model_fn, path=path, include_metacommentary=True)
                         model_results.append(result)
+                        if self.db is not None:
+                            self.db.add_result(
+                                experiment_name=self.name,
+                                matrix_id=matrix_id,
+                                model_name=model_name,
+                                path=path,
+                                data=result,
+                            )
                         
                         # Update progress
                         progress.update(task, advance=1)
