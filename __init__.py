@@ -22,7 +22,6 @@ from .narrative_extractor import traversal_to_narrative, narratives_from_results
 from .natural_language_generator import NaturalLanguageEKMGenerator
 from .explanation_generator import generate_explanation
 from .research_questions import create_specialized_matrices
-from .cultural_matrix_suite import create_cultural_matrices
 from .standard_suite_definitions import (
     PrometheusEKMRegistry,
     load_prometheus_suite_for_experimentation,
@@ -50,7 +49,7 @@ __all__ = [
     "NaturalLanguageEKMGenerator",
     "generate_explanation",
     "create_specialized_matrices",
-    "create_cultural_matrices",
+
     "PrometheusEKMRegistry",
     "load_prometheus_suite_for_experimentation",
 ]
