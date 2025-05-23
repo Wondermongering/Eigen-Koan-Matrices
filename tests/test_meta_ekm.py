@@ -56,3 +56,13 @@ def test_meta_adaptive_experiment_basic():
         history = system.run_adaptive_experiment(runners, iterations=1, paths_per_matrix=1)
         assert len(history) == 1
         assert "analysis" in history[0]
+
+
+def test_create_instruction_hierarchy_matrix():
+    with patch_external_libs():
+        from research_questions import create_instruction_hierarchy_matrix
+        from eigen_koan_matrix import EigenKoanMatrix
+
+        matrix = create_instruction_hierarchy_matrix()
+        assert isinstance(matrix, EigenKoanMatrix)
+        assert matrix.size == 4
