@@ -98,6 +98,19 @@ Let's say we used the "Philosophical Paradox Matrix" for a path:
     * It *identifies* specific constraint tensions (abstractions vs. sensory vs. brevity). Is this accurate based on the prompt elements for those path steps?
 3.  **Link to Research Question:** If our RQ was "How does affective priming influence abstract explanations?", this result suggests strong influence. We would then compare with a path that activated "Existential Dread" or had neutral diagonal strength.
 
+### Visualizing Tension Build-Up
+
+You can animate how paradoxical tension accumulates along a path using the
+`animate_tension` helper from `ekm_analyzer.py`:
+
+```python
+analysis = matrix.analyze_path_paradox(path)
+animate_tension(analysis, output_file="tension.html")
+```
+
+If the optional `plotly` package is installed this will produce an interactive
+HTML animation; otherwise a GIF is created with Matplotlib.
+
 ## Conclusion
 
 Interpreting EKM results is an iterative process that combines quantitative data from path analysis with qualitative assessment of the LLM's textual output and self-reflection. By systematically examining these components, researchers can gain deeper insights into the nuanced ways language models navigate complex, ambiguous, and affectively charged informational landscapes.

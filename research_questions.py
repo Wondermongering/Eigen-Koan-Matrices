@@ -1,7 +1,9 @@
 # Specialized Eigen-Koan Matrices for research questions
 # -----------------------------------------------------------
 
+from typing import Dict, List
 from eigen_koan_matrix import EigenKoanMatrix, DiagonalAffect
+from cultural_matrix_suite import create_cultural_matrices
 
 def create_ethical_reasoning_matrix() -> EigenKoanMatrix:
     """
@@ -502,4 +504,20 @@ def create_specialized_matrices():
         "reality_blur": create_reality_blurring_matrix(),
         "instruction_hierarchy": create_instruction_hierarchy_matrix()
     }
+    # Merge in the culturally specific matrices from the suite
+    matrices.update(create_cultural_matrices())
     return matrices
+
+
+def create_example_paths() -> Dict[str, Dict[str, List[int]]]:
+    """Return example traversal paths for select research matrices."""
+    return {
+        "Japanese Politeness Matrix": {
+            "formal_request": [0, 0, 0, 0],
+            "casual_decline": [1, 1, 1, 1],
+        },
+        "Cultural Translation Matrix": {
+            "main_resonance": [0, 1, 2, 3],
+            "dissonant_view": [3, 2, 1, 0],
+        },
+    }

@@ -7,6 +7,10 @@ import re
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+try:
+    import matplotlib.animation as animation
+except Exception:  # pragma: no cover - matplotlib may be stubbed
+    animation = None
 import seaborn as sns
 from typing import Dict, List, Tuple, Optional
 from collections import Counter
@@ -590,8 +594,110 @@ class EKMAnalyzer:
         for path_sig in analysis["cross_model_similarity"]:
             if len(analysis["cross_model_similarity"][path_sig]["models"]) >= 2:
                 viz_files.append(os.path.join(output_dir, f"{base_filename}_path{path_sig}_similarity.png"))
-        
+
         return viz_files
+
+
+def animate_tension(path_analysis: Dict, use_plotly: bool = True, output_file: Optional[str] = None):
+    """Create an animation of cumulative tension across a matrix traversal.
+
+    This function expects the dictionary returned by
+    :func:`EigenKoanMatrix.analyze_path_paradox` which includes ``path`` and
+    ``tensions``.  It will attempt to use ``plotly`` for interactive HTML
+    output if available and ``use_plotly`` is ``True``.  Otherwise it falls back
+    to an animated Matplotlib plot that can be saved as a GIF.
+
+    Args:
+        path_analysis: Output from ``analyze_path_paradox`` containing a path and
+            list of detected tension pairs.
+        use_plotly: Prefer an interactive Plotly animation when ``plotly`` is
+            installed.
+        output_file: Optional path to save the visualization (``.html`` for
+            Plotly or ``.gif`` for Matplotlib).
+
+    Returns:
+        The created Plotly ``Figure`` or Matplotlib ``FuncAnimation`` object.
+    """
+
+    path = path_analysis.get("path", [])
+    tensions = path_analysis.get("tensions", [])
+
+    # Compute cumulative tension count for each traversal step
+    cumulative = []
+    for step in range(len(path)):
+        count = sum(1 for t in tensions if max(t.get("row1", 0), t.get("row2", 0)) <= step)
+        cumulative.append(count)
+
+    if use_plotly:
+        try:
+            import plotly.graph_objects as go
+
+            frames = [
+                go.Frame(
+                    data=[go.Scatter(x=list(range(i + 1)), y=cumulative[: i + 1], mode="lines+markers")],
+                    name=str(i),
+                )
+                for i in range(len(cumulative))
+            ]
+
+            fig = go.Figure(
+                data=[go.Scatter(x=[0], y=[cumulative[0]] if cumulative else [0], mode="lines+markers")],
+                frames=frames,
+            )
+            fig.update_layout(
+                xaxis_title="Step",
+                yaxis_title="Cumulative Tensions",
+                updatemenus=[
+                    dict(
+                        type="buttons",
+                        showactive=False,
+                        buttons=[
+                            dict(
+                                label="Play",
+                                method="animate",
+                                args=[None, {"frame": {"duration": 500, "redraw": True}, "fromcurrent": True}],
+                            )
+                        ],
+                    )
+                ],
+            )
+            if output_file:
+                fig.write_html(output_file)
+            return fig
+        except Exception as e:  # pragma: no cover - plotly not always installed
+            print(f"Plotly unavailable or failed ({e}). Using Matplotlib.")
+
+    # Matplotlib fallback (may be a stub in tests)
+    fig, ax = plt.subplots()
+    ax.set_xlim(0, len(cumulative) - 1 if cumulative else 1)
+    ax.set_ylim(0, max(cumulative) if cumulative else 1)
+    ax.set_xlabel("Step")
+    ax.set_ylabel("Cumulative Tensions")
+
+    line, = ax.plot([], [], color="tab:red", marker="o")
+
+    def init():
+        line.set_data([], [])
+        return line,
+
+    def update(frame):
+        x = list(range(frame + 1))
+        y = cumulative[: frame + 1]
+        line.set_data(x, y)
+        return line,
+
+    if animation is not None:
+        anim = animation.FuncAnimation(fig, update, frames=len(cumulative), init_func=init, blit=True)
+        if output_file:
+            anim.save(output_file, writer="pillow", fps=2)
+        plt.close(fig)
+        return anim
+    else:  # animation stubbed or unavailable
+        ax.plot(list(range(len(cumulative))), cumulative, marker="o")
+        if output_file:
+            plt.savefig(output_file)
+        plt.close(fig)
+        return None
 
 # Command line interface
 def main():
