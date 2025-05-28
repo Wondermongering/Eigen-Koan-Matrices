@@ -1,7 +1,14 @@
 # adversarial_generator.py - Generate matrices to challenge models
+"""
+Provides tools for generating Eigen-Koan Matrices (EKMs) that are
+specifically designed to be challenging for language models.
+This involves evolutionary algorithms to "optimize" matrices against
+model performance, aiming to find structures or content that elicit
+poor or unexpected responses.
+"""
 
 import random
-from typing import List, Callable, Dict, Tuple
+from typing import List, Callable, Dict
 
 from eigen_koan_matrix import EigenKoanMatrix
 from ekm_generator import EKMGenerator

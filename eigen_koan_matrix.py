@@ -1,7 +1,6 @@
 # eigen_koan_matrix.py - Core implementation of Eigen-Koan Matrices
 # ---------------------------------------------------------
 
-import numpy as np
 import random
 import json
 import datetime

@@ -1,8 +1,14 @@
 # ekm_local_runner.py - Run EKM tests with local models
 # ---------------------------------------------------------
+"""
+Provides a command-line utility and a Python class (LocalModelRunner) 
+for running Eigen-Koan Matrix (EKM) experiments using locally hosted 
+Hugging Face transformer models.
+"""
 
 import argparse
 import os
+import random # Added missing import
 import time
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer

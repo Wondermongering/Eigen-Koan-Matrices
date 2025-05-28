@@ -11,12 +11,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Dict, List, Tuple, Optional, Any, Type # Added Type for EigenKoanMatrix forward reference
+from typing import Dict, List, Optional, Any, Type # Added Type for EigenKoanMatrix forward reference, Tuple removed
 from collections import Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
+# from sklearn.decomposition import PCA # Unused
+# from sklearn.manifold import TSNE # Unused
 from wordcloud import WordCloud # Assuming WordCloud is used in visualization
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer

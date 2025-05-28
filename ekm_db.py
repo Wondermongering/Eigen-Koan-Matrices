@@ -11,6 +11,7 @@ class EKMDatabase:
         self._migrate()
 
     def _migrate(self):
+        """Apply database migrations to bring schema to the latest version."""
         cur = self.conn.cursor()
         cur.execute("PRAGMA foreign_keys=ON")
         cur.execute("CREATE TABLE IF NOT EXISTS schema_version (version INTEGER)")
@@ -25,6 +26,7 @@ class EKMDatabase:
             self.conn.commit()
 
     def _migration_1(self):
+        """Migration 1: Create the initial 'results' table."""
         cur = self.conn.cursor()
         cur.execute(
             """
