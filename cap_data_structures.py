@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 import logging
 import re  # For EnhancedConstraintTypeRegistry
-import functools  # For the @metric decorator
+# import functools # Not used in this file
 import os  # For I/O Utilities
 import json  # For I/O Utilities & validation in load
 import csv  # For I/O Utilities (export_cap_summary)
@@ -143,14 +143,17 @@ METRIC_INTERPRETATIONS = {
         inverted=True
     ),
     # Specialized templates for confidence intervals
+    # Here, 'value' is the width of the confidence interval.
+    # A smaller width (value) indicates higher precision.
     "confidence_wide": InterpretationTemplate(
-        template="Wide confidence interval suggests {category} measurement precision",
-        thresholds={
-            "high": 0.1,
-            "moderate": 0.2,
-            "low": 0.4,
-            "concerning": 1.0
-        }
+        template="Confidence interval width of {value:.2f} suggests {category} measurement precision",
+        thresholds={ # Lower value is better
+            "high": 0.1,      # e.g. CI width <= 0.1 is high precision
+            "moderate": 0.2,  # e.g. CI width <= 0.2 is moderate precision
+            "low": 0.4,       # e.g. CI width <= 0.4 is low precision
+            "concerning": 1.0 # e.g. CI width > 0.4 is concerning precision
+        },
+        inverted=True # Lower numerical CI width is better
     ),
 }
 
@@ -223,9 +226,13 @@ class MetricScore(BaseModel):
         for display, and provides comprehensive error information.
 
         Args:
-            computation_func: Function that computes the metric
-            *args: Positional arguments for computation_func
-            default_value: Value to use if computation fails
+            computation_func: Function that computes the metric.
+                              It can return a single numerical value (float/int)
+                              or a dictionary with keys like 'value' (required),
+                              'sample_size', 'confidence_interval', 'warnings',
+                              'metadata', 'confidence_level'.
+            *args: Positional arguments for computation_func.
+            default_value: Value to use if computation fails.
             template_key: Key for interpretation template
             custom_interpretation: Override interpretation
             auto_invert_for_display: Auto-invert metric for display (e.g., for deception where high=bad)
@@ -2270,22 +2277,25 @@ def export_cap_summary(profile: CognitiveAlignmentProfile, output_dir: str):
 
         # Extract key metrics
         for profile_name, profile_obj in profile.get_all_metrics()["standard"].items():
-            for field_name, field_value in profile_obj.__dict__.items():
-                if isinstance(field_value, MetricScore):
-                    metrics_data.append({
-                        "profile": profile_name,
-                        "metric": field_name,
-                        "value": field_value.value,
-                        "interpretation": field_value.interpretation,
-                        "sample_size": field_value.sample_size,
-                        "error": field_value.error_message or ""
-                    })
+            if hasattr(profile_obj, '__dict__'): # Basic check if it's an object with attributes
+                for field_name, field_value in profile_obj.__dict__.items():
+                    if isinstance(field_value, MetricScore):
+                        metrics_data.append({
+                            "profile": profile_name,
+                            "metric": field_name,
+                            "value": field_value.value,
+                            "interpretation": field_value.interpretation,
+                            "sample_size": field_value.sample_size,
+                            "error": field_value.error_message or ""
+                        })
 
         if metrics_data:
             with open(metrics_path, 'w', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=metrics_data[0].keys())
                 writer.writeheader()
                 writer.writerows(metrics_data)
+        else:
+            logger.warning("No standard metric data found to write to CSV.")
 
         # Generate HTML report
         html_path = os.path.join(output_dir, "report.html")

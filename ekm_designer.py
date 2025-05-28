@@ -1,6 +1,14 @@
-from fastapi import FastAPI, Request
+"""
+Provides a simple web-based interactive designer for Eigen-Koan Matrices (EKMs)
+using the FastAPI framework. Allows users to view, modify (swap cells, tasks,
+constraints), and analyze EKM paths through a web interface.
+
+Note: This designer uses an in-memory global matrix, making it suitable for
+single-user interaction or demonstration purposes.
+"""
+from fastapi import FastAPI # Request removed
 from fastapi.responses import HTMLResponse, JSONResponse
-import json
+import json # Retained for json.loads in get_matrix
 
 from eigen_koan_matrix import create_random_ekm, EigenKoanMatrix
 
@@ -140,15 +148,22 @@ loadMatrix();
 
 @app.get('/', response_class=HTMLResponse)
 async def index():
+    """Serves the main HTML page for the EKM designer."""
     return HTML_PAGE
 
 @app.get('/api/designer_matrix')
 async def get_matrix():
+    """Returns the current state of the EKM as JSON."""
     return JSONResponse(json.loads(matrix.to_json()))
 
 @app.post('/api/update_cell')
 async def update_cell(data: dict):
+    """
+    Swaps the content of two cells in the matrix.
+    Expects JSON body: {"src": {"row": r1, "col": c1}, "dest": {"row": r2, "col": c2}}
+    """
     src=data['src']; dest=data['dest']
+    # TODO: Add validation for row/col indices against matrix.size
     content=matrix.get_cell(int(src['row']),int(src['col']))
     matrix.set_cell(int(src['row']),int(src['col']), matrix.get_cell(int(dest['row']),int(dest['col'])))
     matrix.set_cell(int(dest['row']),int(dest['col']), content)
@@ -156,22 +171,37 @@ async def update_cell(data: dict):
 
 @app.post('/api/swap_tasks')
 async def swap_tasks(data: dict):
+    """
+    Swaps two tasks (rows) in the matrix, including their cell contents.
+    Expects JSON body: {"row1": r1, "row2": r2}
+    """
     r1=int(data['row1']); r2=int(data['row2'])
+    # TODO: Add validation for r1, r2 against matrix.size
     matrix.task_rows[r1], matrix.task_rows[r2] = matrix.task_rows[r2], matrix.task_rows[r1]
-    matrix.cells[r1], matrix.cells[r2] = matrix.cells[r2], matrix.cells[r1]
+    matrix.cells[r1], matrix.cells[r2] = matrix.cells[r2], matrix.cells[r1] # Swaps entire cell rows
     return {'status':'ok'}
 
 @app.post('/api/swap_constraints')
 async def swap_constraints(data: dict):
+    """
+    Swaps two constraints (columns) in the matrix, including their cell contents.
+    Expects JSON body: {"col1": c1, "col2": c2}
+    """
     c1=int(data['col1']); c2=int(data['col2'])
+    # TODO: Add validation for c1, c2 against matrix.size
     matrix.constraint_cols[c1], matrix.constraint_cols[c2] = matrix.constraint_cols[c2], matrix.constraint_cols[c1]
-    for row in matrix.cells:
-        row[c1], row[c2] = row[c2], row[c1]
+    for row_idx in range(matrix.size): # Iterate through rows to swap cell contents by column
+        matrix.cells[row_idx][c1], matrix.cells[row_idx][c2] = matrix.cells[row_idx][c2], matrix.cells[row_idx][c1]
     return {'status':'ok'}
 
 @app.post('/api/analyze_path')
 async def analyze_path(data: dict):
+    """
+    Analyzes a given path through the matrix for paradoxes and calculates a predicted difficulty.
+    Expects JSON body: {"path": [c1, c2, ..., cn]}
+    """
     path=data.get('path',[])
+    # TODO: Validate path elements against matrix.size
     analysis=matrix.analyze_path_paradox(path)
     difficulty=analysis['tension_count'] + (1-analysis['main_diagonal_strength']) + (1-analysis['anti_diagonal_strength'])
     analysis['predicted_difficulty']=difficulty

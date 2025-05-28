@@ -2,14 +2,14 @@
 
 # --------------------------------------------------------
 
-import json
 import random
 import numpy as np
-from typing import List, Dict, Tuple, Optional, Union, Set
+from typing import List, Dict, Tuple, Optional, Union # Set, json, pandas, Progress removed
 from dataclasses import dataclass
 from rich.console import Console
-from rich.progress import Progress
-import pandas as pd
+# from rich.progress import Progress # Unused
+# import pandas as pd # Unused
+# import json # Unused
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 

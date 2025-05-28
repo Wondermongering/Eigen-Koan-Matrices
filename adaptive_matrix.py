@@ -12,7 +12,7 @@ update to guide future traversal choices. It also provides a simple
 from __future__ import annotations
 
 import random
-from typing import Callable, List, Tuple, Optional, Dict
+from typing import Callable, List, Optional, Dict
 
 from eigen_koan_matrix import EigenKoanMatrix
 
@@ -33,17 +33,27 @@ class AdaptiveEigenKoanMatrix:
         return cls(matrix)
 
     def select_path(self, epsilon: float = 0.1, rng: Optional[random.Random] = None) -> List[int]:
-        """Select a path using epsilon-greedy strategy based on Q-values."""
+        """Select a path using epsilon-greedy strategy based on Q-values.
+
+        Args:
+            epsilon: The probability of choosing a random action (exploration).
+                     A value of 0 means greedy selection, 1 means fully random.
+            rng: An optional random number generator for reproducible path selection.
+                 If None, the global `random` module is used.
+
+        Returns:
+            A list of integers representing the selected column indices for each row.
+        """
         rng = rng or random
         path: List[int] = []
         for row in range(self.matrix.size):
             if rng.random() < epsilon:
+                # Explore: select a random column
                 col = rng.randint(0, self.matrix.size - 1)
             else:
-                q_row = self.q_values[row]
-                max_q = max(q_row)
-                # Choose first index with max value for determinism
-                col = q_row.index(max_q)
+                # Exploit: select the column with the highest Q-value
+                # If multiple columns have the same max Q-value, the one with the lowest index is chosen.
+                col = self.q_values[row].index(max(self.q_values[row]))
             path.append(col)
         return path
 
@@ -51,10 +61,17 @@ class AdaptiveEigenKoanMatrix:
         self,
         path: List[int],
         reward: float,
-        alpha: float = 0.1,
-        gamma: float = 0.9,
+        alpha: float = 0.1,  # Learning rate
+        gamma: float = 0.9,  # Discount factor
     ) -> None:
-        """Update Q-values for the chosen path."""
+        """Update Q-values for the chosen path using the Q-learning rule.
+
+        Args:
+            path: The path (list of column indices) taken through the matrix.
+            reward: The reward received for taking that path.
+            alpha: The learning rate, determining how much new information overrides old information.
+            gamma: The discount factor, determining the importance of future rewards.
+        """
         for row, col in enumerate(path):
             current = self.q_values[row][col]
             future_estimate = max(self.q_values[row])
