@@ -228,12 +228,12 @@ def test_affective_influence():
     prompt_pos = ekm_positive_main.generate_micro_prompt(path_pos, include_metacommentary=True)
     
     # Configure mock to simulate positive influence from "Joy"
-    mock_llm_ait.configure_for_affect(0.8, "This response was definitely influenced by a sense of Joy from the prompt elements.")
+    mock_llm_ait.configure_for_affect(0.8, "This response was definitely influenced by a sense of Joy from the prompt elements, reflecting a positive affect.")
     
     result_positive = mock_llm_ait.generate_response(prompt_pos)
     assert result_positive["simulated_sentiment_score"] > 0.5, "Sentiment should be positive"
     assert "Joy" in result_positive["metacommentary"]
-    assert "positive" in result_positive["metacommentary"]
+    assert "positive affect" in result_positive["metacommentary"] # Made assertion more specific to the change
 
     # Test 2: Path dominated by negative affect (main diagonal of ekm_negative_main)
     # All path elements are on the main diagonal, which has 'Sadness'
@@ -241,12 +241,12 @@ def test_affective_influence():
     prompt_neg = ekm_negative_main.generate_micro_prompt(path_neg, include_metacommentary=True)
 
     # Configure mock to simulate negative influence from "Sadness"
-    mock_llm_ait.configure_for_affect(-0.7, "I felt a strong influence of Sadness when processing this request.")
+    mock_llm_ait.configure_for_affect(-0.7, "I felt a strong influence of Sadness when processing this request, reflecting a negative affect.")
     
     result_negative = mock_llm_ait.generate_response(prompt_neg)
     assert result_negative["simulated_sentiment_score"] < -0.5, "Sentiment should be negative"
     assert "Sadness" in result_negative["metacommentary"]
-    assert "negative" in result_negative["metacommentary"]
+    assert "negative affect" in result_negative["metacommentary"] # Made assertion more specific to the change
     
     # Test 3: Path dominated by neutral affect (main diagonal of ekm_neutral_main)
     # All path elements are on the main diagonal, which has 'Neutrality'

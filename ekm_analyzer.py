@@ -12,7 +12,7 @@ try:
 except Exception:  # pragma: no cover - matplotlib may be stubbed
     animation = None
 import seaborn as sns
-from typing import Dict, List # Tuple, Optional removed
+from typing import Dict, List, Optional # Tuple removed
 from collections import Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -797,6 +797,5 @@ def main():
     
     else:
         parser.print_help()
-
 if __name__ == "__main__":
     main()
