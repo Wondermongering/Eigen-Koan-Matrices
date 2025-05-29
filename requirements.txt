@@ -10,4 +10,4 @@ fastapi
 uvicorn
 httpx
 ray
-main
+rich==13.7.1
