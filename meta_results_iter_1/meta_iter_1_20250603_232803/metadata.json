@@ -1,0 +1,22 @@
+{
+  "name": "meta_iter_1",
+  "description": "Meta-level adaptive experiment",
+  "matrices": {
+    "ekm_a539fee22079": "{\n  \"id\": \"ekm_a539fee22079\",\n  \"name\": \"Generated EKM - RQ\",\n  \"size\": 5,\n  \"description\": \"Automatically generated matrix exploring RQ\",\n  \"task_rows\": [\n    \"Define\",\n    \"Explain\",\n    \"Describe\",\n    \"Analyze\",\n    \"Interpret\"\n  ],\n  \"constraint_cols\": [\n    \"precisely\",\n    \"metaphorically\",\n    \"using contradictions\",\n    \"through historical context\",\n    \"without using abstractions\"\n  ],\n  \"main_diagonal\": {\n    \"name\": \"Wonder\",\n    \"tokens\": [\n      \"wonder_0\",\n      \"wonder_1\",\n      \"wonder_2\",\n      \"wonder_3\",\n      \"wonder_4\"\n    ],\n    \"description\": \"Emotional quality of wonder\",\n    \"valence\": 0.8,\n    \"arousal\": 0.7\n  },\n  \"anti_diagonal\": {\n    \"name\": \"Awe\",\n    \"tokens\": [\n      \"awe_0\",\n      \"awe_1\",\n      \"awe_2\",\n      \"awe_3\",\n      \"awe_4\"\n    ],\n    \"description\": \"Emotional quality of awe\",\n    \"valence\": 0.7,\n    \"arousal\": 0.8\n  },\n  \"cells\": [\n    [\n      \"wonder_0\",\n      \"{NULL}\",\n      \"{NULL}\",\n      \"{NULL}\",\n      \"awe_0\"\n    ],\n    [\n      \"{NULL}\",\n      \"wonder_1\",\n      \"{NULL}\",\n      \"awe_1\",\n      \"{NULL}\"\n    ],\n    [\n      \"{NULL}\",\n      \"{NULL}\",\n      \"awe_2\",\n      \"{NULL}\",\n      \"{NULL}\"\n    ],\n    [\n      \"{NULL}\",\n      \"awe_3\",\n      \"{NULL}\",\n      \"wonder_3\",\n      \"{NULL}\"\n    ],\n    [\n      \"awe_4\",\n      \"{NULL}\",\n      \"{NULL}\",\n      \"{NULL}\",\n      \"wonder_4\"\n    ]\n  ]\n}"
+  },
+  "models": [
+    "m"
+  ],
+  "paths": {
+    "ekm_a539fee22079": [
+      [
+        4,
+        0,
+        4,
+        4,
+        0
+      ]
+    ]
+  },
+  "created_at": "2025-06-03T23:28:03.260969"
+}

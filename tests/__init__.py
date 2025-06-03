@@ -171,26 +171,128 @@ def patch_external_libs():
 
     # httpx stub
     httpx_mod = types.ModuleType('httpx')
+
+    # Define a more complete Response class that httpx.AsyncClient would return
+    class MockHttpResponse:
+        def __init__(self, status_code, json_data):
+            self.status_code = status_code
+            self._json_data = json_data # Store the dict
+            self.content = json.dumps(self._json_data).encode('utf-8') # bytes
+            self.body = self.content # for resp.body.decode() compatibility
+            self.text = self.content.decode('utf-8') # string
+
+        def json(self):
+            # Return the original dict, not a re-parsed one, to preserve object identity if needed
+            return self._json_data
+
     class SimpleClient:
-        def __init__(self, *a, **k):
+        # Class attribute to hold the state of the matrix data
+        # This allows a simple way for swap_tasks to modify data that get_matrix retrieves
+        _matrix_data_state = {
+            'size': 2,
+            'task_rows': ['Task Row 0 Initial', 'Task Row 1 Initial'],
+            'constraint_cols': ['Constraint Col 0 Initial', 'Constraint Col 1 Initial'],
+            'cells': [[{'id': 'c00'}, {'id': 'c01'}], [{'id': 'c10'}, {'id': 'c11'}]]
+        }
+
+        @classmethod
+        def reset_state(cls): # Helper to ensure tests start with fresh state if needed
+            cls._matrix_data_state = {
+                'size': 2,
+                'task_rows': ['Task Row 0 Initial', 'Task Row 1 Initial'],
+                'constraint_cols': ['Constraint Col 0 Initial', 'Constraint Col 1 Initial'],
+                'cells': [[{'id': 'c00'}, {'id': 'c01'}], [{'id': 'c10'}, {'id': 'c11'}]]
+            }
+
+        def __init__(self, *args, **kwargs):
+            # Ensure state is reset for each new client instance if tests create them per operation.
+            # Or, rely on explicit reset if client is a singleton.
+            # For now, let's assume tests might reuse instances or class state is okay.
             pass
-        def request(self, *a, **k):
-            return types.SimpleNamespace(status_code=200, json=lambda: {})
-        get = post = request
-        def close(self):
+
+        def _handle_get_matrix(self):
+            # Return a copy to prevent direct modification of the state dict through the response object
+            return MockHttpResponse(200, self.__class__._matrix_data_state.copy())
+
+        def _handle_swap_tasks(self, json_payload: dict):
+            r1_idx = json_payload.get('row1')
+            r2_idx = json_payload.get('row2')
+
+            current_tasks = self.__class__._matrix_data_state['task_rows']
+            if r1_idx is not None and r2_idx is not None and \
+               0 <= r1_idx < len(current_tasks) and \
+               0 <= r2_idx < len(current_tasks):
+
+                current_tasks[r1_idx], current_tasks[r2_idx] = current_tasks[r2_idx], current_tasks[r1_idx]
+                return MockHttpResponse(200, {'status': 'success', 'message': 'Tasks swapped'})
+            else:
+                return MockHttpResponse(400, {'status': 'error', 'message': 'Invalid row indices for swap'})
+
+        def request(self, method: str, url: str, json: dict = None, **kwargs): # Added json for POST
+            # Basic routing: if URL suggests swap and method is POST, handle as swap.
+            if method.upper() == "POST" and "swap" in str(url).lower(): # Check url for 'swap'
+                return self._handle_swap_tasks(json if json else {})
+            # Default to GET matrix data for other GET requests or unspecific URLs
+            elif method.upper() == "GET":
+                 return self._handle_get_matrix()
+            # Fallback for other methods/unrecognized URLs
+            return MockHttpResponse(404, {"status": "error", "message": "Mock endpoint not found"})
+
+        def get(self, url: str, **kwargs):
+            return self.request(method="GET", url=url, **kwargs)
+
+        def post(self, url: str, json: dict = None, **kwargs):
+            return self.request(method="POST", url=url, json=json, **kwargs)
+
+        async def __aenter__(self): # Async context manager support
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb): # Async context manager support
             pass
-    httpx_mod.Client = SimpleClient
+
+        def close(self): # Synchronous close for Client
+            pass
+
+        async def aclose(self): # Asynchronous close for AsyncClient
+            pass
+
     httpx_mod.AsyncClient = SimpleClient
-    class BaseTransport:
-        pass
-    httpx_mod.BaseTransport = BaseTransport
+    httpx_mod.Client = SimpleClient # Also mock sync client
+
+    # httpx.Request and httpx.Response stubs (can be basic if not heavily used by tested code)
     class Request:
-        pass
-    class Response(types.SimpleNamespace):
-        pass
+        def __init__(self, method, url, headers=None, content=None):
+            self.method = method
+            self.url = url
+            self.headers = headers or {}
+            self.content = content
+    # Make httpx.Response an alias for our MockHttpResponse for consistency
+    httpx_mod.Response = MockHttpResponse
     httpx_mod.Request = Request
-    httpx_mod.Response = Response
+
+    # Other httpx attributes that might be accessed
+    httpx_mod.TimeoutException = type('TimeoutException', (Exception,), {})
+    httpx_mod.ConnectTimeout = type('ConnectTimeout', (httpx_mod.TimeoutException,), {})
+    httpx_mod.ReadTimeout = type('ReadTimeout', (httpx_mod.TimeoutException,), {})
+    httpx_mod.WriteTimeout = type('WriteTimeout', (httpx_mod.TimeoutException,), {})
+    httpx_mod.PoolTimeout = type('PoolTimeout', (httpx_mod.TimeoutException,), {})
+    httpx_mod.NetworkError = type('NetworkError', (Exception,), {}) # Base for connection errors
+    httpx_mod.ConnectError = type('ConnectError', (httpx_mod.NetworkError,), {})
+    httpx_mod.ReadError = type('ReadError', (httpx_mod.NetworkError,), {})
+    httpx_mod.WriteError = type('WriteError', (httpx_mod.NetworkError,), {})
+    httpx_mod.CloseError = type('CloseError', (httpx_mod.NetworkError,), {})
+    httpx_mod.HTTPStatusError = type('HTTPStatusError', (Exception,), {'request': None, 'response': None}) # Stub for error responses
+    httpx_mod.InvalidURL = type('InvalidURL', (ValueError,), {})
+    httpx_mod.CookieConflict = type('CookieConflict', (ValueError,), {})
+
+
     modules['httpx'] = httpx_mod
+
+    # Ensure json is available for the above stubs
+    if 'json' not in sys.modules:
+        import json as json_module
+        modules['json'] = json_module
+
 
     with mock.patch.dict(sys.modules, modules):
         yield
